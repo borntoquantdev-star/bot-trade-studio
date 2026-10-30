@@ -1,0 +1,45 @@
+# ขั้นที่ 2 — ผลจาก /bot:strategy
+# เสนอ 3 ตัวเลือกตามโปรไฟล์: Momentum rotation / Trend following / DCA
+# ผู้ใช้เลือก Trend following เพราะอยากให้บอท "ตัดสินใจ" ไม่ใช่แค่ซื้อตามเวลา
+
+name: "crypto-trend-h4"
+archetype: trend_following
+universe:
+  - BTCUSDT
+  - ETHUSDT
+timeframe: H4                   # 15 นาที/วันดูได้ → ห้ามต่ำกว่า H4
+direction: long_only            # ไม่ชอร์ต เพราะ hard_no ห้าม leverage
+
+entry:
+  conditions:                   # ต้องจริงทุกข้อ ตัดสินที่ "แท่งปิด" เท่านั้น
+    - "ema(50) > ema(200)"            # เทรนด์ใหญ่ยังขึ้น
+    - "close > highest(high, 20)[1]"  # ปิดเหนือจุดสูงสุด 20 แท่งก่อนหน้า
+  confirm:
+    - "volume > sma(volume, 20)"
+
+exit:
+  stop_loss:
+    type: atr
+    atr_period: 14
+    atr_multiple: 2.0
+  take_profit:
+    type: none                  # ปล่อยให้ trailing ลาก — กำไรของกลยุทธ์นี้มาจากไม้ยาว
+  trailing:
+    type: chandelier
+    atr_multiple: 3.0
+    activate_after_r: 1.0
+  time_stop_bars: 60            # 60 แท่ง H4 = 10 วัน
+
+signal_ttl:
+  valid_bars: 1                 # สัญญาณหมดอายุใน 1 แท่ง ไม่ไล่ราคาย้อนหลัง
+  max_slippage_pct: 0.15
+
+filters:
+  - "atr(14) / close < 0.008"   # ตลาดนิ่งเกินไป ไม่เทรด
+
+costs:                          # ใส่ตั้งแต่ตอนนี้ ไม่ใช่ไปเพิ่มตอน backtest
+  taker_fee_pct: 0.10
+  maker_fee_pct: 0.10
+  assumed_slippage_pct: 0.05
+
+llm_lanes: []                   # ยังไม่เปิด — ทำทีหลังสุด

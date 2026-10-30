@@ -1,0 +1,38 @@
+# ขั้นที่ 3 — ผลจาก /bot:risk  (ขั้นที่ห้ามข้าม)
+# ทุนที่ risk engine ใช้คำนวณ = deployed_capital = 25,000 บาท
+
+sizing:
+  method: fixed_fractional
+  risk_per_trade_pct: 0.5       # = 125 บาท/ไม้  (มือใหม่ → แนะนำ 0.25–0.5%)
+  max_position_pct: 25          # ไม้เดียวห้ามเกิน 6,250 บาท
+
+limits:
+  max_concurrent_positions: 2   # มีแค่ 2 เหรียญใน universe
+  max_trades_per_day: 3
+  max_daily_loss_pct: 2         # = 500 บาท → หยุดทั้งวัน
+  max_weekly_loss_pct: 5        # = 1,250 บาท
+  max_drawdown_pct: 30          # = 7,500 บาท → KILL SWITCH หยุดถาวร
+  max_leverage: 1               # ตาม hard_no
+  max_correlated_exposure_pct: 50   # BTC กับ ETH วิ่งตามกัน นับเป็นกลุ่มเดียว
+
+trading_window:
+  timezone: Asia/Bangkok
+  allowed_hours: "00:00-23:59"  # คริปโตเปิด 24/7 → พึ่ง kill switch แทนการเฝ้า
+  blackout:
+    - "30 นาทีก่อนและหลังประกาศ FOMC"
+    - "30 นาทีก่อนและหลังประกาศ CPI สหรัฐ"
+
+requires_human_confirm:
+  - increase_position_size
+  - increase_leverage
+  - withdraw_funds
+  - disable_risk_engine
+  - trade_outside_window
+  - resume_after_kill_switch
+
+# ── ผลตรวจความสอดคล้อง 5 ข้อ ──
+# 1. 2 ไม้ × 0.5% = 1.0%  ≤  max_daily_loss 2%                      ✅
+# 2. daily 2% × 5 = 10%   ≥  weekly 5%                              ✅
+# 3. max_drawdown 30% ของ 25,000 = 7,500 บาท = 15% ของ 50,000      ✅ ตรง profile
+# 4. stop = 2.0 ATR  >  1 ATR (ช่วงแกว่งปกติ)                        ✅
+# 5. ไม้เล็กสุดที่คำนวณได้ ≈ 88 USDT  >  ขั้นต่ำ Binance 5 USDT      ✅

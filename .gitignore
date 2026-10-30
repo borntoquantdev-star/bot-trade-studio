@@ -1,0 +1,11 @@
+# ความลับ — ห้ามขึ้น repo เด็ดขาด
+.env
+*.env
+bot/.env
+**/secrets.*
+
+# ไฟล์ที่เครื่องสร้าง
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
