@@ -201,12 +201,13 @@ broker:
 
 secrets:
   source: env
-  required_keys:
-    - BINANCE_API_KEY
-    - BINANCE_API_SECRET
+  required_keys:              # ชื่อตัวแปรขึ้นกับเอ็กซ์เชนจ์ที่เลือก — นี่คือของ GRVT
+    - GRVT_API_KEY
+    - GRVT_PRIVATE_KEY
+    - GRVT_TRADING_ACCOUNT_ID
   key_permissions_required:
     - read
-    - spot_trade
+    - trade                  # perp เท่านั้น สตูดิโอนี้ไม่มี spot
   key_permissions_forbidden:
     - withdraw               # ห้ามเปิดสิทธิ์ถอนเงินเด็ดขาด
 ```
