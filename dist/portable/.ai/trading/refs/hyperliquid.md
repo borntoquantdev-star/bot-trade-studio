@@ -4,9 +4,23 @@
 > https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api
 > ถ้าต้องตอบเรื่องที่ไม่มีในไฟล์นี้ ให้ไปอ่าน doc จริง อย่าตอบจากความจำ
 
+## ⚠️ เงื่อนไขที่ต้องบอกผู้ใช้ก่อน
+
+**faucet ของ testnet จ่าย mock USDC ให้เฉพาะ wallet ที่เคยฝากเงินบน mainnet มาก่อน**
+
+> "To use the testnet faucet, you need to have deposited on mainnet with the same address."
+> ผ่านแล้วได้ 1,000 mock USDC ที่ https://app.hyperliquid-testnet.xyz/drip
+
+ถ้าผู้ใช้ยังไม่เคยฝากเงินจริง **เขาจะไม่มีเงินเทรดบน testnet เลย** ให้ไปใช้
+paper ในเครื่อง หรือ Binance Demo แทน (ดู `refs/choose-exchange.md`)
+
+ถ้าล็อกอินด้วยอีเมล (Privy): address บน mainnet กับ testnet คนละอัน ต้อง export
+wallet จาก mainnet แล้ว import เข้า Rabby/MetaMask ก่อน
+
 ## ทำไมเหมาะกับการเริ่มต้น
 
 - ข้อมูลตลาด (ราคา, แท่งเทียน, metadata) เรียกได้**ฟรี ไม่ต้องมีคีย์**
+  (ส่วนนี้ใช้ได้แม้ยังไม่มีบัญชี — ทดสอบโค้ดอ่านตลาดได้เลย)
 - มี testnet แยกสมบูรณ์
 - ขั้นต่ำต่อออเดอร์ **$10** (ต่ำกว่าเอ็กซ์เชนจ์ใหญ่หลายที่มาก เหมาะกับการทดลองด้วยทุนน้อย)
 - perpetual futures 24/7 ไม่มี gap ข้ามคืน
