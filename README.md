@@ -130,11 +130,11 @@ AGENTS.md               Codex CLI · Cursor · Gemini CLI · Jules
 ## แม่แบบที่พิสูจน์แล้ว
 
 `/bot:scaffold` ไม่ได้เขียนบอทขึ้นใหม่ทุกครั้งอีกแล้ว ถ้าผู้ใช้เทรดคริปโตและรับ Python ได้
-มันจะเริ่มจาก [hyperliquid-bot](https://github.com/borntoquantdev-star/hyperliquid-bot)
-ซึ่งผ่าน **236 เทส offline** และ CI เขียวบน Python 3.10–3.12
+มันจะเริ่มจาก [trade-bot](https://github.com/borntoquantdev-star/trade-bot)
+ซึ่งผ่าน **297 เทส offline** และ CI เขียวบน Python 3.10–3.12
 
 ```bash
-gh repo create my-bot --template borntoquantdev-star/hyperliquid-bot --private --clone
+gh repo create my-bot --template borntoquantdev-star/trade-bot --private --clone
 ```
 
 แล้วงานที่เหลือคือแมปสเปคจาก `bot/*.yaml` ลง config เขียนไฟล์กลยุทธ์ และเทสของมัน

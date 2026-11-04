@@ -3,11 +3,11 @@
 > อ่านไฟล์นี้เมื่อผู้ใช้อยากเห็นว่าบอททำงานถูกไหม ไม่ใช่แค่อ่านตัวเลขสรุป
 > หรือเมื่อเขาพิมพ์ว่า "เปิดหน้าจอ" "ดู dashboard" "ดูบอททำงาน"
 
-แม่แบบ [hyperliquid-bot](https://github.com/borntoquantdev-star/hyperliquid-bot)
+แม่แบบ [trade-bot](https://github.com/borntoquantdev-star/trade-bot)
 มี dashboard มาให้แล้วในโฟลเดอร์ `dashboard/`
 
 ```bash
-hyperbot --dry-run --paper-walk --iterations 60   # หน้าต่างที่ 1: บอท
+tradebot --dry-run --paper-walk --iterations 60   # หน้าต่างที่ 1: บอท
 node dashboard/server.js --open                   # หน้าต่างที่ 2: dashboard
 ```
 
@@ -93,4 +93,4 @@ node dashboard/server.js --help
 - ช้ากว่าบอทได้ถึง 500ms ตามรอบ poll
 - เก็บแค่ 2,000 บรรทัดล่าสุดบนจอ ของเก่ายังอยู่ในไฟล์
 - กราฟคือ**ราคาที่บอทเห็นตอนตัดสินใจ** ไม่ใช่กราฟแท่งเทียนของตลาด
-- การเห็นบอททำงานถูก **ไม่ได้แปลว่ากลยุทธ์ทำกำไร** — คนละเรื่องกันคนละเรื่อง
+- การเห็นบอททำงานถูก **ไม่ได้แปลว่ากลยุทธ์ทำกำไร** — คนละเรื่องกัน

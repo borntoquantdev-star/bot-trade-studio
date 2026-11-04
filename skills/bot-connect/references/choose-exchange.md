@@ -76,46 +76,34 @@ grvt:
 
 ถ้าผู้ใช้เลือก Binance ต้องบอกตรงๆ ว่าต้องเขียน broker เพิ่มเอง — ซึ่งไม่ยาก
 เพราะสถาปัตยกรรมกันไว้แล้ว (เขียนคลาสเดียวตาม `Broker` protocol ใน
-`hyperbot/brokers/base.py` แล้วแยกตัวอ่านคำตอบเป็นฟังก์ชัน pure เหมือน
+`tradebot/brokers/base.py` แล้วแยกตัวอ่านคำตอบเป็นฟังก์ชัน pure เหมือน
 `brokers/hyperliquid.py`) แต่ **`risk_gate` เอนจินและเทสทั้งหมดไม่ต้องแตะเลย**
 
 อย่าบอกว่า "ใช้ได้เลย" ถ้ามันยังไม่มีโค้ด
 
 ---
 
-## ฝั่ง Binance — Demo Trading
+## ถ้าผู้ใช้ยืนยันว่าจะใช้ Binance — อ่านส่วนนี้เท่านั้น
 
-Binance มีสองสภาพแวดล้อมที่**ไม่ใช่อันเดียวกัน** อย่าสลับ
+**อย่าเสนอส่วนนี้เอง** ใช้ต่อเมื่อผู้ใช้ยืนยันเองหลังรู้ต้นทุนแล้วว่าต้องเขียน broker ก่อน
 
-| | Demo Mode | Spot Testnet (ของเดิม) |
-|---|---|---|
-| รีเซ็ตยอดเงิน | กดเองได้ตลอดจาก UI | รีเซ็ตเองทุกเดือน |
-| ล็อกอิน | บัญชี Binance ปกติ | บัญชีแยก |
+ถ้าจะใช้ ต้องเป็น **USDS-M Futures** เท่านั้น เพราะเป็น perp ตรงกับที่แม่แบบออกแบบไว้
 
-**Spot — Demo Mode**
-```
-REST        https://demo-api.binance.com/api
-WS API      wss://demo-ws-api.binance.com/ws-api/v3
-WS streams  wss://demo-stream.binance.com/ws
-กุญแจ        ล็อกอิน Binance → Demo Trading → API Key Management ที่ demo.binance.com
-```
-
-**USDS-M Futures**
 ```
 REST (demo)       https://demo-fapi.binance.com
 WS (demo)         wss://demo-fstream.binance.com
 REST (ของจริง)     https://fapi.binance.com
+กุญแจ              API key + secret → เปิดแค่ read + trade · ปิด withdraw · ทำ IP whitelist
 ```
 
-เอกสาร:
-- https://developers.binance.com/en/docs/products/spot/demo-mode/general-info
-- https://developers.binance.com/en/docs/products/derivatives-trading-usds-futures/general-info
+เอกสาร: https://developers.binance.com/en/docs/products/derivatives-trading-usds-futures/general-info
+
+**Binance spot Demo Mode อยู่นอกขอบเขตของสตูดิโอ** — ถึงจะสมัครง่ายกว่าและรีเซ็ตยอดเงินเองได้
+แต่มันเป็น spot ซึ่งแปลว่าต้องรื้อกลยุทธ์กับกติกาความเสี่ยงใหม่ทั้งชุด ไม่ใช่แค่เปลี่ยน endpoint
+ถ้าผู้ใช้อยากได้ "สนามซ้อมที่รีเซ็ตเงินเองได้" คำตอบคือ **paper ในเครื่อง** ซึ่งทำได้ดีกว่าและไม่ต้องสมัครอะไร
 
 ⚠️ ข้อมูลใน Demo Mode เป็น "realistic market data" แต่**ไม่ใช่ตลาดจริง** —
 กลยุทธ์ที่ได้ผลใน demo ไม่รับประกันว่าได้ผลจริง ต้องบอกผู้ใช้ข้อนี้
-
-กุญแจเป็นแบบ API key + secret → ใช้กฎสิทธิ์ตามปกติ: เปิดแค่ read + trade
-**ปิด withdraw** และทำ IP whitelist
 
 ## ฝั่ง Hyperliquid — testnet
 

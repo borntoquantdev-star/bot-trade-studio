@@ -11,7 +11,7 @@ https://github.com/borntoquantdev-star/trade-bot
 บอทเทรดที่ใช้ได้จริงมีรายละเอียดที่ "เขียนใหม่ทุกครั้ง" แล้วพลาดแน่ๆ เช่นกฎการปัดราคาของตลาด
 การกันสั่งซ้ำ และการที่สถานะ halt ต้องอยู่ข้ามการรีสตาร์ต
 
-แม่แบบนี้ผ่านแล้ว: **236 เทส offline** · `ruff` / `black` / `mypy` สะอาด · CI เขียวบน Python 3.10–3.12
+แม่แบบนี้ผ่านแล้ว: **297 เทส offline** · `ruff` / `black` / `mypy` สะอาด · CI เขียวบน Python 3.10–3.12
 ไม่ต้องมี API key ไม่ต้องต่อเน็ต ก็รันเทสและเทรดกระดาษได้
 
 | สิ่งที่ยากและแม่แบบทำไว้แล้ว | ถ้าเขียนใหม่ |
@@ -31,7 +31,7 @@ gh repo create my-bot --template borntoquantdev-star/trade-bot --private --clone
 cd my-bot
 python -m venv .venv
 .venv/Scripts/python.exe -m pip install -e ".[dev]"     # mac/linux: .venv/bin/python
-.venv/Scripts/python.exe -m pytest                      # ต้องได้ 236 passed ก่อนทำอะไรต่อ
+.venv/Scripts/python.exe -m pytest                      # ต้องได้ 297 passed, 7 skipped ก่อนทำอะไรต่อ
 ```
 
 ถ้าไม่มี `gh` ให้ `git clone` แล้วลบ `.git` ออกและ `git init` ใหม่
@@ -46,7 +46,7 @@ tradebot/
   types.py        Side, InstrumentSpec, RiskLimits, Signal, SizedOrder, Reject, Candle
   risk.py         risk_gate() ← หัวใจ pure sync ไม่มี I/O ไม่มี LLM
   strategies/     base.py (Strategy, MarketView) + random + ma_cross + ทะเบียน
-  brokers/        base.py (Broker protocol) + paper.py (offline) + hyperliquid.py
+  brokers/        base.py (Broker protocol) + paper.py (offline) + grvt.py + hyperliquid.py
   core/           config.py (YAML + env + validate) + engine.py (ลูป ไม่มีกฎเทรด)
   cli/main.py     --dry-run --live --doctor --resume --close --iterations
 tests/            เทส offline + integration ที่ต้องสั่ง --run-integration

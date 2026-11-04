@@ -16,7 +16,7 @@ description: สร้างโปรเจคโค้ดจริงจาก�
 
 ```
 ผู้ใช้เทรดคริปโต perpetual + รับ Python ได้
-    → เริ่มจากแม่แบบ hyperliquid-bot (236 เทสผ่าน, CI เขียว)
+    → เริ่มจากแม่แบบ trade-bot (297 เทสผ่าน, CI เขียว)
       งานที่เหลือคือแมปสเปคลง config + เขียนไฟล์กลยุทธ์ + เทสของมัน
 
 ผู้ใช้เทรดหุ้น / TFEX / ฟอเร็กซ์ หรือยืนยันว่าอยาก Rust
@@ -49,7 +49,7 @@ description: สร้างโปรเจคโค้ดจริงจาก�
 ## ทางที่ 1 — เริ่มจากแม่แบบ (คริปโต + Python)
 
 ```bash
-gh repo create my-bot --template borntoquantdev-star/hyperliquid-bot --private --clone
+gh repo create my-bot --template borntoquantdev-star/trade-bot --private --clone
 cd my-bot
 python -m venv .venv
 .venv/Scripts/python.exe -m pip install -e ".[dev]"
@@ -61,12 +61,12 @@ python -m venv .venv
 แล้วทำ 4 อย่างนี้ตามลำดับ
 
 1. **แมปสเปคลง `config/config.yaml`** ตามตารางใน `references/template.md`
-2. **เขียนไฟล์กลยุทธ์** ใน `hyperbot/strategies/` ตามแบบ `ma_cross.py` แล้วลงทะเบียนใน `__init__.py`
+2. **เขียนไฟล์กลยุทธ์** ใน `tradebot/strategies/` ตามแบบ `ma_cross.py` แล้วลงทะเบียนใน `__init__.py`
 3. **เขียนเทสของกลยุทธ์** อย่างน้อย 5 เคส: ยัง warm-up ไม่ครบ / เงื่อนไขติด / เงื่อนไขไม่ติดหนึ่งก้าวก่อน /
    stop อยู่ฝั่งที่ถูกทั้ง long และ short / เงียบเมื่อมีไม้เปิดอยู่
-4. **รัน `pytest` แล้ว `hyperbot --dry-run --iterations 20`** แล้วอ่าน `logs/audit.jsonl` กับผู้ใช้
+4. **รัน `pytest` แล้ว `tradebot --dry-run --iterations 20`** แล้วอ่าน `logs/audit.jsonl` กับผู้ใช้
 
-**ห้ามแก้ `hyperbot/risk.py` เพื่อให้กลยุทธ์ผ่านด่าน** ถ้ากลยุทธ์ชนด่าน ให้แก้กลยุทธ์หรือสเปค
+**ห้ามแก้ `tradebot/risk.py` เพื่อให้กลยุทธ์ผ่านด่าน** ถ้ากลยุทธ์ชนด่าน ให้แก้กลยุทธ์หรือสเปค
 ถ้าผู้ใช้ยืนยันว่าต้องแก้กฎ ให้เตือนว่าแก้อะไรและทำไมมันถูกใส่ไว้ตอนแรก
 
 ---
