@@ -1,9 +1,10 @@
-# แม่แบบที่พิสูจน์แล้ว — hyperliquid-bot
+# แม่แบบที่พิสูจน์แล้ว — trade-bot
 
 > อ่านไฟล์นี้ก่อนจะ generate โค้ดใหม่เองทุกครั้ง
 > ถ้าผู้ใช้เทรดคริปโตและยอมใช้ Python การ**เริ่มจากแม่แบบนี้** ให้ผลดีกว่าการเขียนขึ้นใหม่เสมอ
+> แม่แบบรองรับ **GRVT และ Hyperliquid** เลือกด้วย `exchange:` บรรทัดเดียวใน config
 
-https://github.com/borntoquantdev-star/hyperliquid-bot
+https://github.com/borntoquantdev-star/trade-bot
 
 ## ทำไมต้องเริ่มจากแม่แบบ ไม่ใช่เขียนใหม่
 
@@ -26,7 +27,7 @@ https://github.com/borntoquantdev-star/hyperliquid-bot
 ## วิธีเริ่ม
 
 ```bash
-gh repo create my-bot --template borntoquantdev-star/hyperliquid-bot --private --clone
+gh repo create my-bot --template borntoquantdev-star/trade-bot --private --clone
 cd my-bot
 python -m venv .venv
 .venv/Scripts/python.exe -m pip install -e ".[dev]"     # mac/linux: .venv/bin/python
@@ -40,7 +41,7 @@ python -m venv .venv
 ## โครงที่ได้มา
 
 ```
-hyperbot/
+tradebot/
   money.py        Decimal ล้วน + floor_to_step / significant_figure_step
   types.py        Side, InstrumentSpec, RiskLimits, Signal, SizedOrder, Reject, Candle
   risk.py         risk_gate() ← หัวใจ pure sync ไม่มี I/O ไม่มี LLM
@@ -103,7 +104,8 @@ qty = งบเสี่ยง / (ระยะstop + (ราคาเข้า +
 
 | จาก bot/*.yaml | ไป config.yaml |
 |---|---|
-| ตลาด/สินค้า | `trading.symbol` (Hyperliquid ใช้ชื่อเหรียญ: `BTC` `ETH` `SOL`) |
+| ตลาดที่จะเทรด | `exchange:` — `grvt` หรือ `hyperliquid` |
+| สินค้า | `trading.symbol` — GRVT ใช้ `BTC_USDT_Perp` · Hyperliquid ใช้ `BTC` · เว้นว่าง = ใช้ค่าเริ่มต้นของตลาดนั้น |
 | timeframe | `trading.timeframe` + `trading.warmup_candles` |
 | ความเสี่ยงต่อไม้ | `risk.risk_per_trade_pct` |
 | เพดานขาดทุนรายวัน | `risk.max_daily_loss_pct` |
@@ -111,7 +113,7 @@ qty = งบเสี่ยง / (ระยะstop + (ราคาเข้า +
 | จำนวนไม้พร้อมกัน | `risk.max_positions` |
 | long only? | `risk.allow_short: false` |
 
-แล้วเขียนกลยุทธ์ของผู้ใช้เป็นไฟล์ใหม่ใน `hyperbot/strategies/` ตามแบบ `ma_cross.py`
+แล้วเขียนกลยุทธ์ของผู้ใช้เป็นไฟล์ใหม่ใน `tradebot/strategies/` ตามแบบ `ma_cross.py`
 **อย่าแก้ `risk.py` เพื่อให้กลยุทธ์ผ่าน** — ถ้ากลยุทธ์ชนด่าน ให้แก้กลยุทธ์หรือสเปค
 
 ## ขั้นต่ำที่ต้องส่งมอบ
@@ -119,7 +121,7 @@ qty = งบเสี่ยง / (ระยะstop + (ราคาเข้า +
 1. โปรเจคที่ `pytest` ผ่าน **รันให้ดูและรายงานผลจริง** ถ้าตกให้บอกตรงๆ
 2. ไฟล์กลยุทธ์ของผู้ใช้ + เทสของมัน (อย่างน้อย 5 เคสตามแบบใน `docs/strategies.md`)
 3. `config/config.yaml` ที่แมปจากสเปคแล้ว
-4. รัน `hyperbot --dry-run --paper-walk --iterations 20` ให้ดู แล้วอ่าน `logs/audit.jsonl` ด้วยกัน
+4. รัน `tradebot --dry-run --paper-walk --iterations 20` ให้ดู แล้วอ่าน `logs/audit.jsonl` ด้วยกัน
 5. เปิด `node dashboard/server.js --open` ให้เขาเห็นห้าขั้นของบอททำงานสดๆ
    (รายละเอียดใน `refs/dashboard.md`)
 5. อธิบายว่าอยากเปลี่ยนพฤติกรรมบอทต้องแก้ตรงไหน (คำตอบคือ YAML เกือบทุกกรณี)
@@ -127,7 +129,7 @@ qty = งบเสี่ยง / (ระยะstop + (ราคาเข้า +
 
 ## เมื่อไหร่ที่ไม่ควรใช้แม่แบบนี้
 
-- ผู้ใช้เทรด**หุ้น / TFEX / ฟอเร็กซ์** → แม่แบบผูกกับ Hyperliquid ให้เขียนใหม่ตามกฎ 5 ข้อใน SKILL
+- ผู้ใช้เทรด**หุ้น / TFEX / ฟอเร็กซ์** → แม่แบบรองรับแต่ crypto perp (GRVT, Hyperliquid) ให้เขียนใหม่ตามกฎ 5 ข้อใน SKILL
   แต่ยัง**ลอกสถาปัตยกรรมและสัญญาของ `risk_gate` มาได้ทั้งหมด**
 - ผู้ใช้ยืนยันว่าอยาก Rust → ใช้โครง Rust ใน SKILL แต่พอร์ต 13 reject code กับสูตรขนาดไม้มา
 - ผู้ใช้อยากเรียนรู้จากการเขียนเองทุกบรรทัด → เคารพความต้องการนั้น แต่บอกให้รู้ว่าแลกกับอะไร

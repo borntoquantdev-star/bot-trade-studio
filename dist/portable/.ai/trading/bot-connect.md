@@ -13,7 +13,8 @@
 1. อ่าน `bot/profile.yaml` และ `bot/strategy.yaml` ก่อน — ถ้ามีคำตอบอยู่แล้ว
    ให้**ทวนกลับเพื่อยืนยัน** ไม่ใช่ถามใหม่ เช่น "ตามสเปคคุณจะเทรด Hyperliquid ใช่ไหม"
 2. ถ้ายังไม่มี ให้**อ่าน `refs/choose-exchange.md` แล้วช่วยเขาเลือก** ด้วยคำถามสองข้อ
-   - "มีบัญชี Binance อยู่แล้วไหม"
+   - "อยากเริ่มที่ตลาดไหน — GRVT, Hyperliquid หรือ Binance"
+   - "มีบัญชีอะไรอยู่แล้วบ้าง"
    - "**เคยฝากเงินจริงเข้า Hyperliquid mainnet ไหม**"
 
    ข้อสองสำคัญที่สุด เพราะ **faucet ของ Hyperliquid testnet จ่าย mock USDC ให้เฉพาะ
@@ -28,6 +29,7 @@
 
 | เอ็กซ์เชนจ์ | อ่านต่อที่ | รูปแบบกุญแจ |
 |---|---|---|
+| **GRVT** | `refs/choose-exchange.md` · แม่แบบรองรับในตัว | api_key + private_key + trading_account_id |
 | **Hyperliquid** | `refs/hyperliquid.md` (อ่านก่อนทำอย่างอื่น) | master address + API wallet key |
 | Binance / Bybit / OKX และ CEX อื่น | ไฟล์นี้ ส่วน "กุญแจแบบ API key + secret" | API key + secret + สิทธิ์ |
 | หุ้น / TFEX / ฟอเร็กซ์ | ไฟล์นี้ ส่วนข้อมูลตลาด + API ของโบรกนั้น | แล้วแต่โบรก |
