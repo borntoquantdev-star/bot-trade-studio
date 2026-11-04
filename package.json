@@ -1,0 +1,43 @@
+{
+  "name": "bot-trade-studio",
+  "version": "0.2.0",
+  "description": "คู่มือสร้างบอทเทรดสำหรับคนที่ไม่ได้เขียนโปรแกรม ติดตั้งลงโปรเจคใดก็ได้ ใช้กับ Claude Code, Codex, Copilot, Cursor",
+  "bin": {
+    "bot-trade-studio": "bin/install.js"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "skills/",
+    "commands/",
+    ".claude-plugin/",
+    "tools/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "author": "Pairat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/borntoquantdev-star/bot-trade-studio.git"
+  },
+  "homepage": "https://github.com/borntoquantdev-star/bot-trade-studio#readme",
+  "keywords": [
+    "trading",
+    "bot",
+    "backtest",
+    "risk-management",
+    "hyperliquid",
+    "claude-code",
+    "copilot",
+    "codex",
+    "ai-skills"
+  ],
+  "scripts": {
+    "build": "python tools/build-adapters.py",
+    "install-here": "node bin/install.js"
+  }
+}

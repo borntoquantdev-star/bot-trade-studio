@@ -9,6 +9,7 @@
     dist/portable/AGENTS.md                 Codex CLI, Cursor, Gemini CLI, Jules
     dist/portable/.github/copilot-instructions.md   GitHub Copilot (VS Code + CLI)
     dist/portable/.github/prompts/*.prompt.md       slash command ของ Copilot
+    dist/portable/.claude/commands/*.md             slash command ของ Claude Code (ระดับโปรเจค)
     dist/codex-prompts/*.md                 คัดลอกไป ~/.codex/prompts/
 """
 import json, os, re, shutil, sys
@@ -28,16 +29,28 @@ STAGE = {
     "bot-monitor": "8",
 }
 # เส้นทางอ้างอิงที่ต้องเขียนใหม่ให้แบนราบ
-REF_FIX = [
-    (r"\.\./bot-home/references/spec-schema\.md", "refs/spec-schema.md"),
-    (r"\.\./bot-strategy/references/catalog\.md", "refs/catalog.md"),
-    (r"\.\./bot-risk/references/sizing\.md", "refs/sizing.md"),
-    (r"\.\./bot-explain/references/glossary\.md", "refs/glossary.md"),
-    (r"references/spec-schema\.md", "refs/spec-schema.md"),
-    (r"references/catalog\.md", "refs/catalog.md"),
-    (r"references/sizing\.md", "refs/sizing.md"),
-    (r"references/glossary\.md", "refs/glossary.md"),
-]
+# ค้นหาเองจาก skills/*/references/*.md ไม่ต้องมารายการไว้ตรงนี้
+# รูปแบบที่จับ: (references/x.md) และ (../bot-yyy/references/x.md) -> (refs/x.md)
+REF_LINK = re.compile(r"(?:\.\./[a-z0-9-]+/)?references/([a-z0-9-]+\.md)")
+
+
+def find_references():
+    """คืน {ชื่อไฟล์: path เต็ม} ของทุกไฟล์ใน skills/*/references/"""
+    found = {}
+    for skill in sorted(os.listdir(SKILLS)):
+        refdir = os.path.join(SKILLS, skill, "references")
+        if not os.path.isdir(refdir):
+            continue
+        for name in sorted(os.listdir(refdir)):
+            if not name.endswith(".md"):
+                continue
+            if name in found:
+                sys.exit(
+                    f"ชื่อไฟล์อ้างอิงซ้ำกัน: {name} อยู่ทั้งใน {found[name]} และ {skill} "
+                    "— ตั้งชื่อให้ไม่ซ้ำเพราะปลายทางถูกวางแบนใน refs/"
+                )
+            found[name] = os.path.join(refdir, name)
+    return found
 
 
 def read_skill(name):
@@ -48,8 +61,7 @@ def read_skill(name):
         sys.exit(f"frontmatter หาย: {path}")
     fm, body = m.group(1), m.group(2).strip()
     desc = re.search(r"^description:\s*(.+)$", fm, re.M).group(1).strip()
-    for pat, rep in REF_FIX:
-        body = re.sub(pat, rep, body)
+    body = REF_LINK.sub(lambda m: "refs/" + m.group(1), body)
     return desc, body
 
 
@@ -83,15 +95,11 @@ def main():
         write(os.path.join(ai, flat(name) + ".md"),
               f"{head}\n\n> {desc}\n\n---\n\n{body}\n")
 
-    # 2) เอกสารอ้างอิง
+    # 2) เอกสารอ้างอิง — คัดลอกทุกไฟล์ที่เจอ
+    refs = find_references()
     os.makedirs(os.path.join(ai, "refs"), exist_ok=True)
-    for src, dst in [
-        ("bot-home/references/spec-schema.md", "spec-schema.md"),
-        ("bot-strategy/references/catalog.md", "catalog.md"),
-        ("bot-risk/references/sizing.md", "sizing.md"),
-        ("bot-explain/references/glossary.md", "glossary.md"),
-    ]:
-        shutil.copyfile(os.path.join(SKILLS, src), os.path.join(ai, "refs", dst))
+    for name, src in refs.items():
+        shutil.copyfile(src, os.path.join(ai, "refs", name))
 
     # ตารางคำสั่งที่ใช้ซ้ำในทุก adapter
     rows = []
@@ -147,6 +155,20 @@ def main():
               "ถ้าไฟล์นั้นชี้ไปไฟล์อื่นใน `.ai/trading/refs/` ให้อ่านไฟล์นั้นด้วย\n\n"
               "สิ่งที่ผู้ใช้พิมพ์เพิ่มมา: ${input:args}\n")
 
+    # 4b) Claude Code — slash command ระดับโปรเจค (สำหรับคนที่ไม่ได้ลง plugin)
+    for name in ORDER:
+        desc, _ = skills[name]
+        f = flat(name)
+        write(
+            os.path.join(portable, ".claude", "commands", f"{f}.md"),
+            "---\n"
+            f"description: {desc.split(' ใช้เมื่อ')[0].strip()}\n"
+            "---\n\n"
+            f"อ่าน `.ai/trading/{f}.md` ในโปรเจคนี้ให้ครบทั้งไฟล์ แล้วทำตามนั้นทุกขั้นตอน\n"
+            "ถ้าไฟล์นั้นชี้ไปไฟล์อื่นใน `.ai/trading/refs/` ให้อ่านไฟล์นั้นด้วย\n\n"
+            "สิ่งที่ผู้ใช้พิมพ์เพิ่มมา: $ARGUMENTS\n",
+        )
+
     # 5) Codex CLI prompts — คัดลอกไป ~/.codex/prompts/
     for name in ORDER:
         f = flat(name)
@@ -157,7 +179,9 @@ def main():
 
     n_files = sum(len(fs) for _, _, fs in os.walk(DIST))
     print(f"สร้างเสร็จ {n_files} ไฟล์ ใน dist/")
-    for d in ("portable/.ai/trading", "portable/.github/prompts", "codex-prompts"):
+    print(f"  {'เอกสารอ้างอิง':34s} {len(refs)} ไฟล์")
+    for d in ("portable/.ai/trading", "portable/.claude/commands",
+              "portable/.github/prompts", "codex-prompts"):
         p = os.path.join(DIST, d.replace("/", os.sep))
         print(f"  {d:34s} {len(os.listdir(p))} รายการ")
 

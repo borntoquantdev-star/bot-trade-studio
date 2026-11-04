@@ -5,6 +5,26 @@
 
 ## ติดตั้ง
 
+### ใช้ได้ทุกเครื่องมือ — คำสั่งเดียว
+
+```bash
+npx github:borntoquantdev-star/bot-trade-studio
+```
+
+คัดลอกคู่มือลงโปรเจคที่อยู่ปัจจุบัน แล้วใช้ได้ทันทีกับ Claude Code, Codex, Copilot, Cursor
+ไม่ต้อง clone ไม่ต้องมีบัญชี npm ไม่ต้องลงอะไรค้างในเครื่อง
+
+```bash
+npx github:borntoquantdev-star/bot-trade-studio --help          # ดูตัวเลือกทั้งหมด
+npx github:borntoquantdev-star/bot-trade-studio ./my-bot        # ระบุโฟลเดอร์
+npx github:borntoquantdev-star/bot-trade-studio --codex-global  # ใส่ slash command ให้ Codex ทั่วเครื่อง
+npx github:borntoquantdev-star/bot-trade-studio --only core     # เอาแค่คู่มือกลาง
+```
+
+ไฟล์ที่มีอยู่แล้วจะถูกข้าม เว้นแต่ใส่ `--force` รันซ้ำได้ไม่เสียหาย
+
+### ลงเป็น plugin ของ Claude Code (ได้ `/bot:home` และโหลด skill อัตโนมัติ)
+
 พิมพ์ใน Claude Code บรรทัดเดียว (ต้องเป็นเวอร์ชัน 2.1.275 ขึ้นไป):
 
 ```
@@ -71,8 +91,10 @@ claude --plugin-dir /path/to/bot-trade-studio
 
 เนื้อหาทั้งหมดอยู่ใน `skills/` ซึ่งเป็น**แหล่งความจริงเดียว** ตัวต่อ (adapter) สำหรับ host อื่นถูก generate ออกมา ไม่ได้เขียนซ้ำ
 
+ติดตั้งด้วย `npx` ตามหัวข้อข้างบน หรือถ้ามี python แต่ไม่มี node:
+
 ```bash
-python tools/build-adapters.py                      # สร้าง dist/
+python tools/build-adapters.py                      # สร้าง dist/ (ตอน dev)
 python tools/install-portable.py "C:/my-project"    # ติดตั้งลงโปรเจคใดก็ได้
 python tools/install-portable.py "C:/my-project" --codex-global
 ```
@@ -80,7 +102,8 @@ python tools/install-portable.py "C:/my-project" --codex-global
 ได้ไฟล์แบบนี้ในโปรเจคปลายทาง:
 
 ```
-.ai/trading/            คู่มือ 14 ไฟล์ + refs/ — ทุกเครื่องมืออ่านจากที่นี่
+.ai/trading/            คู่มือ 14 ไฟล์ + refs/ 7 ไฟล์ — ทุกเครื่องมืออ่านจากที่นี่
+.claude/commands/*.md               slash command ของ Claude Code (ระดับโปรเจค)
 AGENTS.md               Codex CLI · Cursor · Gemini CLI · Jules
 .github/copilot-instructions.md     GitHub Copilot (VS Code + CLI)
 .github/prompts/*.prompt.md         slash command ของ Copilot
@@ -89,7 +112,7 @@ AGENTS.md               Codex CLI · Cursor · Gemini CLI · Jules
 
 | เครื่องมือ | โมเดล | เรียกยังไง |
 |---|---|---|
-| Claude Code | Claude | `/bot:home`, `/bot:strategy` (ติดตั้งเป็น plugin) |
+| Claude Code | Claude | `/bot:home` ถ้าลงเป็น plugin · `/bot` ถ้าลงด้วย npx |
 | Codex CLI | ChatGPT | `/bot`, `/bot-strategy` (อ่าน `AGENTS.md` อัตโนมัติ) |
 | Copilot CLI | Claude / ChatGPT | `/bot`, `/bot-strategy` |
 | VS Code + Copilot Chat | Claude / ChatGPT | `/bot` ในช่องแชต (โหมด Agent) |
@@ -103,6 +126,27 @@ AGENTS.md               Codex CLI · Cursor · Gemini CLI · Jules
 - ชื่อคำสั่ง: Claude Code ใช้ `:` (`/bot:strategy`) host อื่นใช้ `-` (`/bot-strategy`) เพราะ `:` ใช้ในชื่อไฟล์ไม่ได้
 - Claude Code โหลด skill ให้อัตโนมัติเมื่อบทสนทนาเข้าเรื่องที่ตรงกับ `description` — host อื่นต้องพิมพ์ slash command หรืออ้างไฟล์เอง
 - `AskUserQuestion` (ปุ่มกดเลือก) มีเฉพาะ Claude Code — host อื่นจะถามเป็นข้อความธรรมดาแทน เนื้อหาคู่มือยังใช้ได้เหมือนกัน
+
+## แม่แบบที่พิสูจน์แล้ว
+
+`/bot:scaffold` ไม่ได้เขียนบอทขึ้นใหม่ทุกครั้งอีกแล้ว ถ้าผู้ใช้เทรดคริปโตและรับ Python ได้
+มันจะเริ่มจาก [hyperliquid-bot](https://github.com/borntoquantdev-star/hyperliquid-bot)
+ซึ่งผ่าน **236 เทส offline** และ CI เขียวบน Python 3.10–3.12
+
+```bash
+gh repo create my-bot --template borntoquantdev-star/hyperliquid-bot --private --clone
+```
+
+แล้วงานที่เหลือคือแมปสเปคจาก `bot/*.yaml` ลง config เขียนไฟล์กลยุทธ์ และเทสของมัน
+ไม่ใช่การเขียน risk engine ขึ้นใหม่แล้วหวังว่าจะถูก
+
+เอกสารอ้างอิง 3 ไฟล์ที่ skill อ่านก่อนลงมือ:
+
+| ไฟล์ | เนื้อหา |
+|---|---|
+| `refs/template.md` | แม่แบบมีอะไร สัญญาของ `risk_gate` 13 เหตุผลปฏิเสธ สูตรขนาดไม้ สิ่งที่ต้องปรับตามสเปค |
+| `refs/hyperliquid.md` | กฎราคา 5 sig figs + 6−szDecimals · lot step · cloid 128 bit · กุญแจสองตัวที่คนสับสน · เช็คลิสต์ทดสอบ |
+| `refs/pitfalls.md` | กับดัก 11 ข้อจากการรีวิวบอทจริง — credential รั่วเพราะ shallow copy, ปัดเศษได้ศูนย์, ออเดอร์ล้มเหลวถูกนับเป็นสำเร็จ |
 
 ## หลักการที่ฝังอยู่ในทุก skill
 
