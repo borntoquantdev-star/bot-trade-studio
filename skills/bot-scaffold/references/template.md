@@ -48,7 +48,8 @@ hyperbot/
   brokers/        base.py (Broker protocol) + paper.py (offline) + hyperliquid.py
   core/           config.py (YAML + env + validate) + engine.py (ลูป ไม่มีกฎเทรด)
   cli/main.py     --dry-run --live --doctor --resume --close --iterations
-tests/            236 เทส offline + integration ที่ต้องสั่ง --run-integration
+tests/            เทส offline + integration ที่ต้องสั่ง --run-integration
+dashboard/        หน้าดูบอททำงาน realtime (Node ล้วน ไม่มี dependency)
 config/config.example.yaml
 ```
 
@@ -118,7 +119,9 @@ qty = งบเสี่ยง / (ระยะstop + (ราคาเข้า +
 1. โปรเจคที่ `pytest` ผ่าน **รันให้ดูและรายงานผลจริง** ถ้าตกให้บอกตรงๆ
 2. ไฟล์กลยุทธ์ของผู้ใช้ + เทสของมัน (อย่างน้อย 5 เคสตามแบบใน `docs/strategies.md`)
 3. `config/config.yaml` ที่แมปจากสเปคแล้ว
-4. รัน `hyperbot --dry-run --iterations 20` ให้ดู แล้วอ่าน `logs/audit.jsonl` ด้วยกัน
+4. รัน `hyperbot --dry-run --paper-walk --iterations 20` ให้ดู แล้วอ่าน `logs/audit.jsonl` ด้วยกัน
+5. เปิด `node dashboard/server.js --open` ให้เขาเห็นห้าขั้นของบอททำงานสดๆ
+   (รายละเอียดใน `refs/dashboard.md`)
 5. อธิบายว่าอยากเปลี่ยนพฤติกรรมบอทต้องแก้ตรงไหน (คำตอบคือ YAML เกือบทุกกรณี)
 6. อัปเดต `bot/STATUS.md`
 
