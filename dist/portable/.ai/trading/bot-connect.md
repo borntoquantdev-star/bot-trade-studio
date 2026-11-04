@@ -13,7 +13,7 @@
 1. อ่าน `bot/profile.yaml` และ `bot/strategy.yaml` ก่อน — ถ้ามีคำตอบอยู่แล้ว
    ให้**ทวนกลับเพื่อยืนยัน** ไม่ใช่ถามใหม่ เช่น "ตามสเปคคุณจะเทรด Hyperliquid ใช่ไหม"
 2. ถ้ายังไม่มี ให้**อ่าน `refs/choose-exchange.md` แล้วช่วยเขาเลือก** ด้วยคำถามสองข้อ
-   - "อยากเริ่มที่ตลาดไหน — GRVT, Hyperliquid หรือ Binance"
+   - "อยากเริ่มที่ตลาดไหน — **GRVT** (ค่าเริ่มต้นของโปรเจคนี้), Hyperliquid หรือ Binance"
    - "มีบัญชีอะไรอยู่แล้วบ้าง"
    - "**เคยฝากเงินจริงเข้า Hyperliquid mainnet ไหม**"
 
@@ -29,7 +29,7 @@
 
 | เอ็กซ์เชนจ์ | อ่านต่อที่ | รูปแบบกุญแจ |
 |---|---|---|
-| **GRVT** | `refs/choose-exchange.md` · แม่แบบรองรับในตัว | api_key + private_key + trading_account_id |
+| **GRVT** ← ตลาดหลักของโปรเจคนี้ | `refs/grvt.md` (อ่านก่อนทำอย่างอื่น) | api_key + private_key + trading_account_id |
 | **Hyperliquid** | `refs/hyperliquid.md` (อ่านก่อนทำอย่างอื่น) | master address + API wallet key |
 | Binance / Bybit / OKX และ CEX อื่น | ไฟล์นี้ ส่วน "กุญแจแบบ API key + secret" | API key + secret + สิทธิ์ |
 | หุ้น / TFEX / ฟอเร็กซ์ | ไฟล์นี้ ส่วนข้อมูลตลาด + API ของโบรกนั้น | แล้วแต่โบรก |
@@ -77,8 +77,9 @@ bot/.env.*
 
 | ตลาด | ข้อมูลย้อนหลัง | ข้อมูลสด | หมายเหตุ |
 |---|---|---|---|
-| คริปโต perp | **Hyperliquid** `candles_snapshot` (ฟรี ไม่ต้องมีคีย์) | WebSocket | ขั้นต่ำ $10/ไม้ มี testnet แยก · อ่าน `refs/hyperliquid.md` |
-| คริปโต spot | Binance klines (ฟรี ย้อนถึง 2017) | WebSocket | ข้อมูลย้อนหลังยาวที่สุด |
+| **คริปโต perp (ค่าเริ่มต้น)** | **GRVT** `fetch_ohlcv` | WebSocket | แม่แบบรองรับในตัว · ไม่มีเงื่อนไขกั้นแบบ faucet · อ่าน `refs/grvt.md` |
+| คริปโต perp (ทางเลือก) | Hyperliquid `candles_snapshot` (ฟรี ไม่ต้องมีคีย์) | WebSocket | ขั้นต่ำ $10/ไม้ · **testnet ต้องเคย deposit mainnet ก่อน** · อ่าน `refs/hyperliquid.md` |
+| คริปโต spot | Binance klines (ฟรี ย้อนถึง 2017) | WebSocket | ข้อมูลย้อนหลังยาวที่สุด · ต้องเขียน broker เพิ่มเอง |
 | หุ้นสหรัฐ | Alpaca, Polygon, Yahoo | WebSocket | ข้อมูลคุณภาพดีที่สุด ต้องระวัง split/dividend |
 | หุ้นไทย | SETSMART, ข้อมูลโบรก | ส่วนใหญ่ต้องซื้อ | หายากที่สุด เตรียมใจเรื่องค่าใช้จ่าย |
 | TFEX | ข้อมูลโบรก | ผ่าน API โบรก | ต้องจัดการ rollover สัญญา |

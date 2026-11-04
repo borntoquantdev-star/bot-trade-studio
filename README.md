@@ -149,6 +149,7 @@ gh repo create my-bot --template borntoquantdev-star/hyperliquid-bot --private -
 | ไฟล์ | เนื้อหา |
 |---|---|
 | `refs/template.md` | แม่แบบมีอะไร สัญญาของ `risk_gate` 13 เหตุผลปฏิเสธ สูตรขนาดไม้ สิ่งที่ต้องปรับตามสเปค |
+| `refs/grvt.md` | **ตลาดหลัก** — สเปคสินค้าจาก fetch_market · min_size เป็นจำนวนสินค้า · client_order_id ต้องเป็นตัวเลข · กับดักสเกลราคา 1e9 · เช็คลิสต์ทดสอบ |
 | `refs/hyperliquid.md` | กฎราคา 5 sig figs + 6−szDecimals · lot step · cloid 128 bit · กุญแจสองตัวที่คนสับสน · เช็คลิสต์ทดสอบ |
 | `refs/choose-exchange.md` | เลือกสนามซ้อม: Binance Demo หรือ Hyperliquid testnet · **faucet ของ Hyperliquid ต้องเคย deposit mainnet ก่อน** · base URL ของทั้งสองฝั่ง |
 | `refs/pitfalls.md` | กับดัก 11 ข้อจากการรีวิวบอทจริง — credential รั่วเพราะ shallow copy, ปัดเศษได้ศูนย์, ออเดอร์ล้มเหลวถูกนับเป็นสำเร็จ |

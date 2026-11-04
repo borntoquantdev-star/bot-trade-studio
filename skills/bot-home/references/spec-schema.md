@@ -108,7 +108,47 @@ requires_human_confirm:       # สิ่งที่บอทห้ามทำ
 ไปใช้กับอีกที่หนึ่ง และห้ามเดาว่าผู้ใช้ใช้เอ็กซ์เชนจ์ไหน — ต้องรู้คำตอบก่อนเขียนไฟล์นี้
 (ดูขั้นที่ 0 ใน `/bot:connect`)
 
-### แบบ Hyperliquid — perp DEX ที่ใช้ API wallet
+### แบบ GRVT — ค่าเริ่มต้นของโปรเจคนี้
+
+```yaml
+exchange: grvt
+
+data:
+  provider: grvt
+  type: rest_poll            # websocket | rest_poll | csv
+  history_source: grvt_ohlcv # fetch_ohlcv ของ SDK
+  symbol: BTC_USDT_Perp      # ชื่อเป็นคู่เทรด ไม่ใช่ BTCUSDT หรือ BTC
+  interval: 4h
+  storage_timezone: UTC
+  quality_checks:
+    - no_gaps
+    - timezone_normalized_utc
+  use_closed_bars_only: true
+
+broker:
+  name: grvt
+  env: testnet               # testnet | prod  (prod ต้องใส่ --live)
+  mode: paper                # paper | live
+  order_type: limit          # เข้าเป็น limit เสมอ ปิดด้วย market + reduce_only
+  idempotency: client_order_id   # ⚠️ GRVT รับเป็น "ตัวเลข" (uint32)
+  reconcile_every_seconds: 30
+
+secrets:
+  source: env                # อ่านจาก bot/.env เท่านั้น
+  required_keys:
+    - GRVT_API_KEY
+    - GRVT_PRIVATE_KEY
+    - GRVT_TRADING_ACCOUNT_ID
+  key_permissions_required:
+    - trade
+  key_permissions_forbidden:
+    - withdraw               # ห้ามเปิดสิทธิ์ถอนเงินเด็ดขาด
+  notes:
+    - "tick_size / min_size / base_decimals อ่านจาก fetch_market ไม่ต้องเดา"
+    - "min_size เป็นจำนวนสินค้า ไม่ใช่มูลค่า จึงมีด่านขั้นต่ำสองชั้น"
+```
+
+### แบบ Hyperliquid — perp DEX ที่ใช้ API wallet (ทางเลือก)
 
 ```yaml
 data:
@@ -139,7 +179,7 @@ secrets:
     - "ห้ามเอา address ของ agent ไป query ตลาดจะตอบสถานะว่างโดยไม่แจ้ง error"
 ```
 
-### แบบ CEX ที่ใช้ API key + secret (Binance, Bybit, OKX...)
+### แบบ CEX ที่ใช้ API key + secret (Binance, Bybit, OKX... — ต้องเขียน broker เพิ่ม)
 
 ```yaml
 data:
