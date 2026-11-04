@@ -104,10 +104,47 @@ requires_human_confirm:       # สิ่งที่บอทห้ามทำ
 
 ## bot/connection.yaml
 
+⚠️ **ช่อง `secrets` หน้าตาไม่เหมือนกันในแต่ละเอ็กซ์เชนจ์** ห้ามคัดลอกตัวอย่างของที่หนึ่ง
+ไปใช้กับอีกที่หนึ่ง และห้ามเดาว่าผู้ใช้ใช้เอ็กซ์เชนจ์ไหน — ต้องรู้คำตอบก่อนเขียนไฟล์นี้
+(ดูขั้นที่ 0 ใน `/bot:connect`)
+
+### แบบ Hyperliquid — perp DEX ที่ใช้ API wallet
+
+```yaml
+data:
+  provider: hyperliquid
+  type: rest_poll            # websocket | rest_poll | csv
+  history_source: hyperliquid_candles   # /info candleSnapshot ฟรี ไม่ต้องมีกุญแจ
+  timeframe: 5m
+  quality_checks:
+    - no_gaps
+    - timezone_normalized_utc
+
+broker:
+  name: hyperliquid
+  network: testnet           # testnet | mainnet
+  mode: paper                # paper | live
+  order_type: limit          # เข้าเป็น limit เสมอ ปิดด้วย ioc ที่ไล่ราคา
+  idempotency: cloid         # 0x + 32 hex ตลาดบังคับกฎห้ามซ้ำให้อีกชั้น
+  min_notional_usd: 10
+  reconcile_every_seconds: 30
+
+secrets:
+  source: env                # อ่านจาก bot/.env เท่านั้น
+  required_keys:
+    - HYPERLIQUID_ACCOUNT_ADDRESS   # บัญชีแม่ ใช้ query (ไม่ใช่ความลับ แต่เก็บรวมไว้)
+    - HYPERLIQUID_API_WALLET_KEY    # private key ของ agent ใช้เซ็นอย่างเดียว
+  notes:
+    - "API wallet ถอนเงินไม่ได้โดยธรรมชาติ จึงไม่มีช่องสิทธิ์ให้ตั้ง"
+    - "ห้ามเอา address ของ agent ไป query ตลาดจะตอบสถานะว่างโดยไม่แจ้ง error"
+```
+
+### แบบ CEX ที่ใช้ API key + secret (Binance, Bybit, OKX...)
+
 ```yaml
 data:
   provider: binance
-  type: websocket            # websocket | rest_poll | csv
+  type: websocket
   history_source: binance_klines
   history_from: "2019-01-01"
   quality_checks:
@@ -118,12 +155,12 @@ data:
 broker:
   name: binance
   mode: testnet              # testnet | paper | live
-  order_type: limit          # limit | market
+  order_type: limit
   idempotency: client_order_id
   reconcile_every_seconds: 30
 
 secrets:
-  source: env                # อ่านจาก bot/.env เท่านั้น
+  source: env
   required_keys:
     - BINANCE_API_KEY
     - BINANCE_API_SECRET
