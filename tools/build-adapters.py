@@ -22,7 +22,7 @@ ORDER = [
     "bot-home", "bot-profile", "bot-strategy", "bot-risk", "bot-connect",
     "bot-backtest", "bot-paper", "bot-deploy", "bot-monitor",
     "bot-panic", "bot-tune", "bot-reality-check", "bot-explain", "bot-scaffold",
-    "bot-demo",
+    "bot-demo", "bot-check", "bot-review",
 ]
 STAGE = {
     "bot-home": "0", "bot-profile": "1", "bot-strategy": "2", "bot-risk": "3",

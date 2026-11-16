@@ -65,7 +65,10 @@ python -m venv .venv
 2. **เขียนไฟล์กลยุทธ์** ใน `tradebot/strategies/` ตามแบบ `ma_cross.py` แล้วลงทะเบียนใน `__init__.py`
 3. **เขียนเทสของกลยุทธ์** อย่างน้อย 5 เคส: ยัง warm-up ไม่ครบ / เงื่อนไขติด / เงื่อนไขไม่ติดหนึ่งก้าวก่อน /
    stop อยู่ฝั่งที่ถูกทั้ง long และ short / เงียบเมื่อมีไม้เปิดอยู่
-4. **รัน `pytest` แล้ว `tradebot --dry-run --iterations 20`** แล้วอ่าน `logs/audit.jsonl` กับผู้ใช้
+4. **รัน `pytest` แล้ว `tradebot --config config/testnet.yaml --check --strategy <ชื่อ>`** ต้องขึ้น PASS
+   (รายละเอียดและวิธีอ่านผลอยู่ใน `/bot:check`) แล้วค่อย `tradebot --dry-run --iterations 20`
+   อ่าน `logs/audit.jsonl` กับผู้ใช้
+   ขั้นตอนเขียนกลยุทธ์ให้ทำตาม `ai/workflows/strategy-builder.md` ในแม่แบบ ซึ่งมีแบบของ `get_exit()` ที่ตัด stop ด้วย
 
 **ห้ามแก้ `tradebot/risk.py` เพื่อให้กลยุทธ์ผ่านด่าน** ถ้ากลยุทธ์ชนด่าน ให้แก้กลยุทธ์หรือสเปค
 ถ้าผู้ใช้ยืนยันว่าต้องแก้กฎ ให้เตือนว่าแก้อะไรและทำไมมันถูกใส่ไว้ตอนแรก
